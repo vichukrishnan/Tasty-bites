@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tasty Bites - Online Food Ordering</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #e1f5fe; color: #01579b; }
+  html { scroll-behavior: smooth; }
+
+  /* Header + navigation */
+  header { background: #0277bd; color: #fff; padding: 12px 24px; overflow: hidden; border-bottom: 4px solid #4fc3f7; }
+  header h1 { margin: 0; font-size: 26px; float: left; line-height: 42px; letter-spacing: 1px; }
+  header h1 small { font-size: 12px; color: #b3e5fc; letter-spacing: 2px; display: block; line-height: 8px; margin-left: 38px; }
+  nav { float: right; }
+  nav a, nav button { display: inline-block; margin-left: 6px; padding: 10px 18px; background: transparent; color: #fff;
+    text-decoration: none; border: 2px solid #4fc3f7; border-radius: 22px; font-size: 14px; cursor: pointer; }
+  nav a:hover, nav button:hover { background: #4fc3f7; color: #01579b; }
+  nav button { background: #4fc3f7; color: #01579b; font-weight: bold; }
+
+  /* Hero */
+  .hero { background: #29b6f6; background: linear-gradient(135deg, #0288d1, #29b6f6 70%, #81d4fa); color: #fff; text-align: center; padding: 34px 12px 26px; }
+  .hero h2 { margin: 0 0 8px; font-size: 32px; }
+  .hero p { margin: 0 0 14px; font-size: 16px; }
+  .hero .emojis { font-size: 46px; letter-spacing: 10px; }
+  .hero .emojis span { display: inline-block; }
+  .hero .emojis span:hover { -webkit-transform: scale(1.3); transform: scale(1.3); }
+  .strip { background: #01579b; color: #b3e5fc; text-align: center; padding: 8px; font-size: 14px; letter-spacing: 1px; }
+
+  section { max-width: 980px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+  section h3 { margin-top: 0; color: #0277bd; font-size: 22px; border-bottom: 3px solid #4fc3f7; padding-bottom: 8px; }
+
+  /* Dropdown + tabs */
+  select, input[type=text], input[type=tel], input[type=email], input[type=number], textarea { padding: 9px; border: 1px solid #81d4fa; border-radius: 6px; font-size: 14px; }
+  .tabs { margin: 14px 0 0; }
+  .tab-btn { padding: 10px 20px; border: none; border-radius: 8px 8px 0 0; background: #e1f5fe; cursor: pointer; font-size: 14px; margin-right: 3px; }
+  .tab-btn:hover { background: #4fc3f7; }
+  .tab-btn.active { background: #0277bd; color: #fff; }
+  .tab-content { display: none; border: 2px solid #0277bd; border-radius: 0 8px 8px 8px; padding: 14px 8px; background: #f5fbff; text-align: center; }
+  .tab-content.show { display: block; }
+
+  /* Food cards */
+  .card { display: inline-block; width: 30%; margin: 1% 1.2%; padding: 14px 10px; background: #fff; border: 1px solid #b3e5fc; border-radius: 14px; vertical-align: top; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+  .card:hover { background: #b3e5fc; border-color: #29b6f6; box-shadow: 0 6px 14px rgba(0,0,0,.25); }
+  .pic { width: 96px; height: 96px; line-height: 96px; margin: 0 auto 8px; border-radius: 50%; font-size: 52px; text-align: center; }
+  .c1 { background: #b3e5fc; } .c2 { background: #ffcdd2; } .c3 { background: #c8e6c9; } .c4 { background: #bbdefb; } .c5 { background: #f8bbd0; } .c6 { background: #d1c4e9; }
+  .card h4 { margin: 4px 0; font-size: 16px; }
+  .card p { margin: 0 0 6px; font-size: 12px; color: #546e7a; }
+  .price { display: inline-block; background: #27ae60; color: #fff; padding: 4px 12px; border-radius: 14px; font-weight: bold; font-size: 14px; }
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #b3e5fc; margin-left: 4px; }
+
+  /* Selection */
+  fieldset { border: 1px solid #81d4fa; border-radius: 8px; margin-bottom: 14px; padding: 10px 14px; }
+  legend { font-weight: bold; color: #0277bd; padding: 0 6px; }
+  label.opt { margin-right: 16px; display: inline-block; padding: 5px 10px; margin-bottom: 4px; border-radius: 16px; background: #e1f5fe; border: 1px solid #b3e5fc; cursor: pointer; }
+  label.opt:hover { background: #4fc3f7; }
+  .btn { padding: 11px 22px; background: #27ae60; color: #fff; border: none; border-radius: 22px; font-size: 15px; cursor: pointer; margin-right: 8px; }
+  .btn:hover { background: #1e8449; }
+  .btn.red { background: #c0392b; } .btn.red:hover { background: #922b21; }
+  .qty { width: 70px; }
+
+  /* Form */
+  .row { margin-bottom: 12px; }
+  .row label { display: inline-block; width: 160px; font-weight: bold; vertical-align: top; }
+  .row input[type=text], .row input[type=tel], .row input[type=email], .row textarea { width: 60%; }
+  input:focus, textarea:focus, select:focus { outline: 2px solid #4fc3f7; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; }
+  th { background: #0277bd; color: #fff; padding: 10px; text-align: left; }
+  td { padding: 9px; border-bottom: 1px solid #b3e5fc; }
+  tr:hover td { background: #b3e5fc; }
+  tfoot td { font-weight: bold; background: #b3e5fc; font-size: 16px; }
+
+  /* Accordion */
+  .acc-head { width: 100%; text-align: left; padding: 13px; background: #29b6f6; color: #fff; border: none; border-bottom: 2px solid #fff; font-size: 15px; cursor: pointer; }
+  .acc-head:hover { background: #0277bd; }
+  .acc-body { display: none; padding: 14px; background: #b3e5fc; border: 1px solid #b3e5fc; }
+  .acc-body.show { display: block; }
+
+  .offer { display: inline-block; width: 30%; margin: 1% 1.2%; padding: 16px; background: #b3e5fc; border: 3px dashed #29b6f6; border-radius: 12px; text-align: center; vertical-align: top; font-size: 14px; }
+  .offer .big { font-size: 38px; }
+  .offer h4 { margin: 6px 0; color: #0277bd; font-size: 18px; }
+  .offer:hover { background: #4fc3f7; }
+  footer { background: #01579b; color: #fff; text-align: center; padding: 16px; margin-top: 24px; font-size: 14px; }
+  footer a { color: #81d4fa; }
+  #msg { color: #27ae60; font-weight: bold; margin-top: 12px; }
+
+  @media (max-width: 700px) {
+    header h1, nav { float: none; text-align: center; }
+    nav a, nav button { margin: 6px 3px 0; padding: 8px 12px; }
+    .card, .offer { width: 94%; }
+    .row label { display: block; width: auto; }
+    .row input[type=text], .row input[type=tel], .row input[type=email], .row textarea { width: 100%; }
+    .hero .emojis { font-size: 34px; letter-spacing: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>&#127869; Tasty Bites<small>FRESH &bull; HOT &bull; DELIVERED</small></h1>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#menu">Menu</a>
+    <a href="#offers">Offers</a>
+    <a href="#contact">Contact</a>
+    <button type="button" onclick="document.getElementById('order').scrollIntoView();">Order Now</button>
+  </nav>
+</header>
+
+<div class="hero" id="home">
+  <h2>Hungry? Order Fresh Food Online!</h2>
+  <p>Browse our menu, customize your order and get it delivered to your door.</p>
+  <div class="emojis"><span>&#127829;</span><span>&#127828;</span><span>&#127836;</span><span>&#127835;</span><span>&#127848;</span><span>&#129380;</span></div>
+</div>
+<div class="strip">&#11088; Chef's Special Today: Chicken Biryani &nbsp;|&nbsp; &#128757; Free delivery within 5 km &nbsp;|&nbsp; &#9200; Open 10 AM - 11 PM</div>
+
+<!-- MENU: dropdown + tabs + food cards -->
+<section id="menu">
+  <h3>Our Menu</h3>
+  <label for="cat"><b>Choose Category:</b></label>
+  <select id="cat" onchange="showTab(this.value)">
+    <option value="starters">Starters</option>
+    <option value="main">Main Course</option>
+    <option value="desserts">Desserts</option>
+    <option value="drinks">Drinks</option>
+  </select>
+
+  <div class="tabs">
+    <button type="button" class="tab-btn active" id="btn-starters" onclick="showTab('starters')">&#127836; Starters</button>
+    <button type="button" class="tab-btn" id="btn-main" onclick="showTab('main')">&#127835; Main Course</button>
+    <button type="button" class="tab-btn" id="btn-desserts" onclick="showTab('desserts')">&#127848; Desserts</button>
+    <button type="button" class="tab-btn" id="btn-drinks" onclick="showTab('drinks')">&#129380; Drinks</button>
+  </div>
+
+  <div class="tab-content show" id="tab-starters">
+    <div class="card"><div class="pic c1">&#127839;</div><h4>Veg Spring Rolls</h4><p>Crispy rolls with fresh veggies</p><span class="price">Rs. 90</span></div><div class="card"><div class="pic c2">&#127842;</div><h4>Paneer Tikka</h4><p>Tandoori grilled cottage cheese</p><span class="price">Rs. 150</span></div><div class="card"><div class="pic c3">&#127831;</div><h4>Chicken 65</h4><p>Spicy South Indian fry <span class="tag">Hot</span></p><span class="price">Rs. 170</span></div>
+  </div>
+  <div class="tab-content" id="tab-main">
+    <div class="card"><div class="pic c6">&#127834;</div><h4>Veg Biryani</h4><p>Basmati rice with vegetables</p><span class="price">Rs. 140</span></div><div class="card"><div class="pic c1">&#127835;</div><h4>Chicken Biryani</h4><p>Our chef's special <span class="tag">Best</span></p><span class="price">Rs. 190</span></div><div class="card"><div class="pic c2">&#127829;</div><h4>Margherita Pizza</h4><p>Cheesy thin-crust classic</p><span class="price">Rs. 220</span></div>
+  </div>
+  <div class="tab-content" id="tab-desserts">
+    <div class="card"><div class="pic c1">&#127857;</div><h4>Gulab Jamun</h4><p>Soft, sweet and syrupy</p><span class="price">Rs. 60</span></div><div class="card"><div class="pic c4">&#127856;</div><h4>Chocolate Brownie</h4><p>Warm, rich and fudgy</p><span class="price">Rs. 100</span></div><div class="card"><div class="pic c5">&#127848;</div><h4>Ice Cream Sundae</h4><p>Three scoops with toppings</p><span class="price">Rs. 120</span></div>
+  </div>
+  <div class="tab-content" id="tab-drinks">
+    <div class="card"><div class="pic c3">&#127819;</div><h4>Fresh Lime Soda</h4><p>Sweet or salt, your choice</p><span class="price">Rs. 50</span></div><div class="card"><div class="pic c6">&#129389;</div><h4>Mango Lassi</h4><p>Chilled mango yogurt drink</p><span class="price">Rs. 80</span></div><div class="card"><div class="pic c4">&#9749;</div><h4>Cold Coffee</h4><p>Creamy iced coffee</p><span class="price">Rs. 90</span></div>
+  </div>
+</section>
+
+<!-- OFFERS -->
+<section id="offers">
+  <h3>Today's Offers</h3>
+  <div class="offer"><div class="big">&#127881;</div><h4>20% OFF</h4>On orders above Rs. 500</div><div class="offer"><div class="big">&#127856;</div><h4>Free Dessert</h4>With any two main courses</div><div class="offer"><div class="big">&#128757;</div><h4>Free Delivery</h4>Within 5 km radius</div>
+</section>
+
+<!-- FOOD SELECTION -->
+<section id="order">
+  <h3>Select Your Food</h3>
+  <form id="selectForm" onsubmit="return false;">
+    <fieldset>
+      <legend>Choose Items (Checkboxes)</legend>
+      <label class="opt"><input type="checkbox" name="food" value="Veg Spring Rolls|90"> &#127839; Veg Spring Rolls (Rs. 90)</label>
+      <label class="opt"><input type="checkbox" name="food" value="Paneer Tikka|150"> &#127842; Paneer Tikka (Rs. 150)</label>
+      <label class="opt"><input type="checkbox" name="food" value="Veg Biryani|140"> &#127834; Veg Biryani (Rs. 140)</label>
+      <label class="opt"><input type="checkbox" name="food" value="Chicken Biryani|190"> &#127835; Chicken Biryani (Rs. 190)</label>
+      <label class="opt"><input type="checkbox" name="food" value="Margherita Pizza|220"> &#127829; Margherita Pizza (Rs. 220)</label>
+      <label class="opt"><input type="checkbox" name="food" value="Gulab Jamun|60"> &#127857; Gulab Jamun (Rs. 60)</label>
+      <label class="opt"><input type="checkbox" name="food" value="Mango Lassi|80"> &#129389; Mango Lassi (Rs. 80)</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Portion Size (Radio Buttons)</legend>
+      <label class="opt"><input type="radio" name="size" value="1" checked> Regular</label>
+      <label class="opt"><input type="radio" name="size" value="1.5"> Large (+50%)</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Quantity</legend>
+      Number of plates: <input type="number" id="qty" class="qty" value="1" min="1" max="10">
+    </fieldset>
+
+    <button type="button" class="btn" onclick="addToSummary()">Add to Order</button>
+    <button type="button" class="btn red" onclick="clearOrder()">Clear Selection</button>
+  </form>
+</section>
+
+<!-- ORDER SUMMARY -->
+<section id="summary">
+  <h3>Order Summary</h3>
+  <table>
+    <thead><tr><th>S.No</th><th>Food Item</th><th>Quantity</th><th>Unit Price (Rs.)</th><th>Total (Rs.)</th></tr></thead>
+    <tbody id="summaryBody"><tr><td colspan="5">No items selected yet.</td></tr></tbody>
+    <tfoot><tr><td colspan="4">Grand Total</td><td id="grand">Rs. 0</td></tr></tfoot>
+  </table>
+</section>
+
+<!-- CUSTOMER FORM -->
+<section id="contact">
+  <h3>Customer Order Form</h3>
+  <form onsubmit="return placeOrder();">
+    <div class="row"><label for="name">Full Name:</label><input type="text" id="name" placeholder="Enter your name" required></div>
+    <div class="row"><label for="phone">Phone Number:</label><input type="tel" id="phone" placeholder="10-digit mobile number" required></div>
+    <div class="row"><label for="email">Email:</label><input type="email" id="email" placeholder="you@example.com"></div>
+    <div class="row"><label for="addr">Delivery Address:</label><textarea id="addr" rows="3" placeholder="House no., street, city, pincode" required></textarea></div>
+    <div class="row"><label for="notes">Special Instructions:</label><textarea id="notes" rows="2" placeholder="Less spicy, extra sauce, etc."></textarea></div>
+    <button type="submit" class="btn">Place Order</button>
+    <button type="reset" class="btn red">Reset</button>
+    <div id="msg"></div>
+  </form>
+  <p>&#128231; <a href="mailto:orders@tastybites.com">orders@tastybites.com</a> &nbsp;|&nbsp; &#128222; 98765 43210</p>
+</section>
+
+<!-- ACCORDION -->
+<section id="details">
+  <h3>Food Descriptions &amp; Ingredients</h3>
+  <button type="button" class="acc-head" onclick="toggleAcc('a1')">&#127842; Paneer Tikka</button>
+  <div class="acc-body" id="a1">Marinated cottage cheese grilled in a tandoor. <b>Ingredients:</b> paneer, yogurt, capsicum, onion, chilli powder, ginger-garlic paste, spices.</div>
+  <button type="button" class="acc-head" onclick="toggleAcc('a2')">&#127834; Veg Biryani</button>
+  <div class="acc-body" id="a2">Fragrant basmati rice cooked with vegetables. <b>Ingredients:</b> basmati rice, carrot, beans, peas, mint, saffron, ghee, biryani masala.</div>
+  <button type="button" class="acc-head" onclick="toggleAcc('a3')">&#127829; Margherita Pizza</button>
+  <div class="acc-body" id="a3">Classic thin-crust pizza. <b>Ingredients:</b> pizza dough, tomato sauce, mozzarella cheese, basil, olive oil.</div>
+  <button type="button" class="acc-head" onclick="toggleAcc('a4')">&#129389; Mango Lassi</button>
+  <div class="acc-body" id="a4">Chilled yogurt-based drink. <b>Ingredients:</b> curd, mango pulp, sugar, cardamom, ice.</div>
+</section>
+
+<footer>
+  &copy; 2026 Tasty Bites | <a href="#home">Back to Top</a> | <a href="#menu">Menu</a> | <a href="#offers">Offers</a>
+</footer>
+
+<script>
+var tabs = ['starters','main','desserts','drinks'];
+function showTab(name) {
+  for (var i = 0; i < tabs.length; i++) {
+    document.getElementById('tab-' + tabs[i]).className = 'tab-content' + (tabs[i] === name ? ' show' : '');
+    document.getElementById('btn-' + tabs[i]).className = 'tab-btn' + (tabs[i] === name ? ' active' : '');
+  }
+  document.getElementById('cat').value = name;
+}
+function toggleAcc(id) {
+  var el = document.getElementById(id);
+  var open = el.className.indexOf('show') > -1;
+  var all = document.getElementsByClassName('acc-body');
+  for (var i = 0; i < all.length; i++) { all[i].className = 'acc-body'; }
+  if (!open) { el.className = 'acc-body show'; }
+}
+function addToSummary() {
+  var boxes = document.getElementsByName('food');
+  var radios = document.getElementsByName('size');
+  var factor = 1;
+  for (var r = 0; r < radios.length; r++) { if (radios[r].checked) { factor = parseFloat(radios[r].value); } }
+  var qty = parseInt(document.getElementById('qty').value, 10) || 1;
+  var rows = '', total = 0, n = 0;
+  for (var i = 0; i < boxes.length; i++) {
+    if (boxes[i].checked) {
+      var p = boxes[i].value.split('|');
+      var unit = p[1] * factor, line = unit * qty;
+      n++; total += line;
+      rows += '<tr><td>' + n + '</td><td>' + p[0] + '</td><td>' + qty + '</td><td>' + unit + '</td><td>' + line + '</td></tr>';
+    }
+  }
+  if (n === 0) { alert('Please select at least one food item.'); return; }
+  document.getElementById('summaryBody').innerHTML = rows;
+  document.getElementById('grand').innerHTML = 'Rs. ' + total;
+  document.getElementById('summary').scrollIntoView();
+}
+function clearOrder() {
+  var boxes = document.getElementsByName('food');
+  for (var i = 0; i < boxes.length; i++) { boxes[i].checked = false; }
+  document.getElementById('summaryBody').innerHTML = '<tr><td colspan="5">No items selected yet.</td></tr>';
+  document.getElementById('grand').innerHTML = 'Rs. 0';
+}
+function placeOrder() {
+  var name = document.getElementById('name').value;
+  document.getElementById('msg').innerHTML = 'Thank you, ' + name + '! Your order has been placed successfully.';
+  return false;
+}
+</script>
+</body>
+</html>
